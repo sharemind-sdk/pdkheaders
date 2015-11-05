@@ -27,7 +27,7 @@
 #include <ostream>
 #include <sharemind/miner/PdpiIncomingMessage.h>
 #include <sharemind/miner/PdpiOutgoingMessage.h>
-#include <sharemind/Random/IRandom.h>
+#include <sharemind/Random/RandomEngine.h>
 #include <stdexcept>
 #include <type_traits>
 #include <vector>
@@ -294,7 +294,7 @@ public: /* Methods: */
         m_num_bits += other.m_num_bits;
     }
 
-    void randomize (IRandom& rng) {
+    void randomize (RandomEngine& rng) {
         if (! empty ()) {
             rng.fillBytes (&m_blocks[0], sizeof (block_type) * num_blocks_ ());
         }
