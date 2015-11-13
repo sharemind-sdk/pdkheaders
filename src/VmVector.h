@@ -17,8 +17,8 @@
  * For further information, please contact us at sharemind@cyber.ee.
  */
 
-#ifndef SHAREMIND_PDKHEADERS_VMREFERENCES_H
-#define SHAREMIND_PDKHEADERS_VMREFERENCES_H
+#ifndef SHAREMIND_PDKHEADERS_VMVECTOR_H
+#define SHAREMIND_PDKHEADERS_VMVECTOR_H
 
 #include <cstddef>
 #include <sharemind/libmodapi/api_0x1.h>
@@ -153,4 +153,4 @@ public: /* Methods: */
 
 } /* namespace sharemind */
 
-#endif /* SHAREMIND_PDKHEADERS_VMREFERENCES_H */
+#endif /* SHAREMIND_PDKHEADERS_VMVECTOR_H */
