@@ -20,6 +20,8 @@
 #ifndef SHAREMIND_PDKHEADERS_SYSCALLSCOMMON_H
 #define SHAREMIND_PDKHEADERS_SYSCALLSCOMMON_H
 
+#include <cassert>
+#include <cstdlib>
 #include <exception>
 #include <new>
 

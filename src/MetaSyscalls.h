@@ -167,10 +167,6 @@ public:
                 return SHAREMIND_MODULE_API_0x1_GENERAL_ERROR;
             }
 
-            if (! pdpi->isComputingNode ()) {
-                return SHAREMIND_MODULE_API_0x1_OK;
-            }
-
             const ShareVec<T>& param = *static_cast<ShareVec<T>*>(paramHandle);
             ShareVec<L>& result = *static_cast<ShareVec<L>*>(resultHandle);
 
