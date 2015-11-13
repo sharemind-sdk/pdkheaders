@@ -24,7 +24,7 @@
 
 #include "ShareVector.h"
 #include "SyscallsCommon.h"
-#include "VmReferences.h"
+#include "VmVector.h"
 
 /**
  * Meta-syscalls for many common cases.

@@ -20,11 +20,17 @@
 #ifndef SHAREMIND_PDKHEADERS_VALUETRAITS_H
 #define SHAREMIND_PDKHEADERS_VALUETRAITS_H
 
+#include <cstddef>
 #include <cstdint>
+#include <type_traits>
 
 
 namespace sharemind {
 
+/*
+ * Hierarchy of types.
+ */
+struct __attribute__ ((visibility("internal"))) any_value_tag { };
 
 /**
  * \brief Type traits to track static information about sharemind types.
@@ -81,6 +87,11 @@ struct __attribute__ ((visibility("internal"))) ValueTraits {
     static constexpr size_t log_of_bits = ValueType::log_of_bits;
 
 }; /* struct ValueTraits { */
+
+template <typename T>
+struct __attribute__ ((visibility("internal"))) is_any_value_tag :
+    std::is_base_of<any_value_tag, typename ValueTraits<T>::value_category>
+{ };
 
 } /* namespace sharemind */
 
