@@ -37,7 +37,7 @@ template <typename T> class ShareVec;
 
 struct __attribute__ ((visibility("internal"))) ShareVecBase {
 public: /* Types: */
-    virtual ~ShareVecBase () noexcept { }
+    virtual ~ShareVecBase () {}
 };
 
 template <typename Iter, class DerivedIter>
