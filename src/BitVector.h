@@ -25,8 +25,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <ostream>
-#include <sharemind/miner/PdpiIncomingMessage.h>
-#include <sharemind/miner/PdpiOutgoingMessage.h>
+#include <Hairball/NetworkMessage.h>
 #include <sharemind/Random/RandomEngine.h>
 #include <stdexcept>
 #include <type_traits>
@@ -300,8 +299,8 @@ public: /* Methods: */
         }
     }
 
-    bool deserialize(PdpiIncomingMessage & msg);
-    void serialize(PdpiOutgoingMessage & msg) const;
+    bool deserialize(IncomingNetworkMessage & msg);
+    void serialize(OutgoingNetworkMessage & msg) const;
 
     allocator_type get_allocator () const {
         return m_blocks.get_allocator ();
@@ -458,7 +457,7 @@ bool operator != (const BitVec<B, A, S>& x, const BitVec<B, A, S>& y) {
 }
 
 template <typename B, typename A, typename S>
-bool BitVec<B, A, S>::deserialize(PdpiIncomingMessage &msg) {
+bool BitVec<B, A, S>::deserialize(IncomingNetworkMessage &msg) {
     typename Serialization::block_type num_bits = 0;
     if (! msg.read (num_bits)) {
         return false;
@@ -495,7 +494,7 @@ bool BitVec<B, A, S>::deserialize(PdpiIncomingMessage &msg) {
 }
 
 template <typename B, typename A, typename S>
-void BitVec<B, A, S>::serialize(PdpiOutgoingMessage & msg) const {
+void BitVec<B, A, S>::serialize(OutgoingNetworkMessage & msg) const {
     const typename Serialization::block_type num_bits = m_num_bits;
     msg.write(num_bits);
     size_type block_index = 0;

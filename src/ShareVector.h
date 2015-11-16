@@ -24,8 +24,7 @@
 #include <cstdint>
 #include <iterator>
 
-#include <sharemind/miner/PdpiIncomingMessage.h>
-#include <sharemind/miner/PdpiOutgoingMessage.h>
+#include <Hairball/NetworkMessage.h>
 #include <sharemind/Random/RandomEngine.h>
 
 #include "BitVector.h"
@@ -422,14 +421,14 @@ public: /* Methods: */
         }
     }
 
-    inline bool deserialize(PdpiIncomingMessage & msg) {
+    inline bool deserialize(IncomingNetworkMessage & msg) {
         if (empty())
             return msg.readEmptyBlock();
 
         return msg.readBlock(begin_ptr (), end_ptr ());
     }
 
-    inline void serialize(PdpiOutgoingMessage & msg) const {
+    inline void serialize(OutgoingNetworkMessage & msg) const {
         if (!empty()) {
             msg.writeBlock(begin_ptr (), end_ptr ());
         } else {
@@ -536,8 +535,8 @@ public: /* Methods: */
     }
 
     inline void randomize (RandomEngine& rng) { m_vector.randomize (rng); }
-    inline bool deserialize(PdpiIncomingMessage & msg) { return m_vector.deserialize(msg); }
-    inline void serialize(PdpiOutgoingMessage & msg) const
+    inline bool deserialize(IncomingNetworkMessage & msg) { return m_vector.deserialize(msg); }
+    inline void serialize(OutgoingNetworkMessage & msg) const
     { return m_vector.serialize(msg); }
 
     BitShareVec& operator &= (const BitShareVec& other) { m_vector &= other.m_vector; return *this; }
