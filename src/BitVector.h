@@ -25,7 +25,6 @@
 #include <cstdint>
 #include <cstdlib>
 #include <ostream>
-#include <Hairball/NetworkMessage.h>
 #include <sharemind/Random/RandomEngine.h>
 #include <stdexcept>
 #include <type_traits>
@@ -299,8 +298,8 @@ public: /* Methods: */
         }
     }
 
-    bool deserialize(IncomingNetworkMessage & msg);
-    void serialize(OutgoingNetworkMessage & msg) const;
+    template <typename InMessage> bool deserialize(InMessage &msg);
+    template <typename OutMessage> void serialize(OutMessage &msg) const;
 
     allocator_type get_allocator () const {
         return m_blocks.get_allocator ();
@@ -457,7 +456,8 @@ bool operator != (const BitVec<B, A, S>& x, const BitVec<B, A, S>& y) {
 }
 
 template <typename B, typename A, typename S>
-bool BitVec<B, A, S>::deserialize(IncomingNetworkMessage &msg) {
+template <typename InMessage>
+bool BitVec<B, A, S>::deserialize (InMessage &msg) {
     typename Serialization::block_type num_bits = 0;
     if (! msg.read (num_bits)) {
         return false;
@@ -494,7 +494,8 @@ bool BitVec<B, A, S>::deserialize(IncomingNetworkMessage &msg) {
 }
 
 template <typename B, typename A, typename S>
-void BitVec<B, A, S>::serialize(OutgoingNetworkMessage & msg) const {
+template <typename OutMessage>
+void BitVec<B, A, S>::serialize (OutMessage & msg) const {
     const typename Serialization::block_type num_bits = m_num_bits;
     msg.write(num_bits);
     size_type block_index = 0;

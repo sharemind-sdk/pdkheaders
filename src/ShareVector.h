@@ -24,7 +24,6 @@
 #include <cstdint>
 #include <iterator>
 
-#include <Hairball/NetworkMessage.h>
 #include <sharemind/Random/RandomEngine.h>
 
 #include "BitVector.h"
@@ -421,14 +420,16 @@ public: /* Methods: */
         }
     }
 
-    inline bool deserialize(IncomingNetworkMessage & msg) {
+    template <typename InMessage>
+    inline bool deserialize(InMessage & msg) {
         if (empty())
             return msg.readEmptyBlock();
 
         return msg.readBlock(begin_ptr (), end_ptr ());
     }
 
-    inline void serialize(OutgoingNetworkMessage & msg) const {
+    template <typename OutMessage>
+    inline void serialize(OutMessage & msg) const {
         if (!empty()) {
             msg.writeBlock(begin_ptr (), end_ptr ());
         } else {
@@ -535,8 +536,9 @@ public: /* Methods: */
     }
 
     inline void randomize (RandomEngine& rng) { m_vector.randomize (rng); }
-    inline bool deserialize(IncomingNetworkMessage & msg) { return m_vector.deserialize(msg); }
-    inline void serialize(OutgoingNetworkMessage & msg) const
+    template <typename InMessage> inline bool deserialize(InMessage & msg)
+    { return m_vector.deserialize(msg); }
+    template <typename OutMessage> inline void serialize(OutMessage & msg) const
     { return m_vector.serialize(msg); }
 
     BitShareVec& operator &= (const BitShareVec& other) { m_vector &= other.m_vector; return *this; }
