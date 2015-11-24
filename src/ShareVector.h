@@ -24,8 +24,6 @@
 #include <cstdint>
 #include <iterator>
 
-#include <sharemind/Random/RandomEngine.h>
-
 #include "BitVector.h"
 #include "ValueTraits.h"
 
@@ -413,8 +411,8 @@ public: /* Methods: */
         m_vector.assign(n, val);
     }
 
-
-    inline void randomize(RandomEngine & rng) {
+    template <typename Rng>
+    inline void randomize(Rng & rng) {
         if (!empty()) {
             rng.fillBlock(begin_ptr (), end_ptr ());
         }
@@ -535,7 +533,8 @@ public: /* Methods: */
         m_vector.clear_and_release ();
     }
 
-    inline void randomize (RandomEngine& rng) { m_vector.randomize (rng); }
+    template <typename Rng> inline void randomize (Rng & rng)
+    { m_vector.randomize (rng); }
     template <typename InMessage> inline bool deserialize(InMessage & msg)
     { return m_vector.deserialize(msg); }
     template <typename OutMessage> inline void serialize(OutMessage & msg) const

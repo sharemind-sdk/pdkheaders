@@ -25,7 +25,6 @@
 #include <cstdint>
 #include <cstdlib>
 #include <ostream>
-#include <sharemind/Random/RandomEngine.h>
 #include <stdexcept>
 #include <type_traits>
 #include <vector>
@@ -292,7 +291,8 @@ public: /* Methods: */
         m_num_bits += other.m_num_bits;
     }
 
-    void randomize (RandomEngine& rng) {
+    template <typename Rng>
+    void randomize (Rng &rng) {
         if (! empty ()) {
             rng.fillBytes (&m_blocks[0], sizeof (block_type) * num_blocks_ ());
         }

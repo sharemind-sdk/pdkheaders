@@ -22,7 +22,6 @@
 
 #include <cstddef>
 #include <sharemind/libcmodapi/api_0x1.h>
-#include <sharemind/Random/RandomEngine.h>
 
 #include "BitVector.h"
 #include "ValueTraits.h"
@@ -100,7 +99,8 @@ public: /* Methods: */
     iterator end () { return this->m_end; }
     value_type& operator [] (size_t i) { return *(this->m_begin + i); }
 
-    void randomize(RandomEngine & rng) {
+    template <typename Rng>
+    void randomize(Rng & rng) {
         if (! empty ())
             rng.fillBlock (begin(), end());
     }
@@ -113,8 +113,8 @@ public: /* Methods: */
 
 }; /* class MutableCtrlVec { */
 
-template <>
-void MutableCtrlVec<bool>::randomize (RandomEngine & rng) {
+template <> template <typename Rng>
+void MutableCtrlVec<bool>::randomize (Rng & rng) {
     if (! empty ()) {
         BitVec<> bits (end() - begin());
         bits.randomize(rng);
