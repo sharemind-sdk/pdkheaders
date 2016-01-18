@@ -18,8 +18,8 @@
  */
 
 
-#ifndef SHAREMIND_MINER_LIBPD_H
-#define SHAREMIND_MINER_LIBPD_H
+#ifndef SHAREMIND_PDKHEADERS_LIBPD_H
+#define SHAREMIND_PDKHEADERS_LIBPD_H
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -314,4 +314,4 @@ struct SharemindPdNetworkFacility_ {
 } /* extern "C" { */
 #endif
 
-#endif /* SHAREMIND_MINER_LIBPD_H */
+#endif /* SHAREMIND_PDKHEADERS_LIBPD_H */
