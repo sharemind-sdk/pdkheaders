@@ -289,6 +289,18 @@ struct SharemindPdNetworkFacility_ {
     void (* const clear_error)(SharemindPdNetworkFacility * facility);
 
     /**
+      \brief Checks whether a server with the given name is known.
+      \param[in] facility pointer to this facility.
+      \param[in] serverName the name of the server to search for.
+      \param[out] serverNumberout if non-null, the number of the server.
+      \returns whether a server with the given name is known.
+    */
+    bool (* const haveServer)(
+            SharemindPdNetworkFacility const * facility,
+            char const * serverName,
+            size_t * serverNumberOut);
+
+    /**
       \brief Initializes and return a the PD network object.
       \param[in] facility pointer to this facility.
       \param[in] numberOfNodeConfigurations the number of node configurations in confs.
