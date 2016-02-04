@@ -237,12 +237,6 @@ struct SharemindPdNetwork_ {
 
     /**
       \param[in] network pointer to this object.
-      \returns the number of the local miner. Numbering begins with 1.
-    */
-    size_t (* const get_local_miner_number)(const SharemindPdNetwork * network);
-
-    /**
-      \param[in] network pointer to this object.
       \returns the number of the local node mapped to the local miner. Numbering begins with 1.
     */
     size_t (* const get_local_node_number)(const SharemindPdNetwork * network);
