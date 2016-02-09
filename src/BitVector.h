@@ -244,7 +244,7 @@ public: /* Methods: */
     }
 
     void assign (const size_type & n, const value_type & val) {
-        resize(compute_block_count (n));
+        resize(n);
         val ? set() : reset();
     }
 
