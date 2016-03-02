@@ -36,12 +36,12 @@ struct SharemindMessage_;
 typedef struct SharemindMessage_ SharemindMessage;
 struct SharemindNode_;
 typedef struct SharemindNode_ SharemindNode;
-struct SharemindPdpiNetwork_;
-typedef struct SharemindPdpiNetwork_ SharemindPdpiNetwork;
-struct SharemindPdpiNetworkFactory_;
-typedef struct SharemindPdpiNetworkFactory_ SharemindPdpiNetworkFactory;
-struct SharemindPdNetwork_;
-typedef struct SharemindPdNetwork_ SharemindPdNetwork;
+struct SharemindNetworkConfiguration_;
+typedef struct SharemindNetworkConfiguration_ SharemindNetworkConfiguration;
+struct SharemindNetwork_;
+typedef struct SharemindNetwork_ SharemindNetwork;
+struct SharemindPdpiNetworkFacility_;
+typedef struct SharemindPdpiNetworkFacility_ SharemindPdpiNetworkFacility;
 struct SharemindPdNetworkFacility_;
 typedef struct SharemindPdNetworkFacility_ SharemindPdNetworkFacility;
 
@@ -52,8 +52,7 @@ struct SharemindNodeConfiguration_ {
     bool is_computing_node;
 };
 
-
-/** \brief Represents a simple network message for Sharemind nodes in PD and PDPI networks. */
+/** \brief Represents a simple network message for Sharemind nodes in Sharemind networks. */
 struct SharemindMessage_ {
 
     /** Pointer to data or NULL on error. */
@@ -62,45 +61,45 @@ struct SharemindMessage_ {
     /** Size of data (may be zero). */
     size_t size;
 
-}; /* struct SharemindPdpiMessage_ { */
+}; /* struct SharemindMessage_ { */
 
-enum SharemindPdNetworkError_ {
+enum SharemindNetworkError_ {
 
     /** No error. */
-    SHAREMIND_PD_NETWORK_OK = 0,
+    SHAREMIND_NETWORK_OK = 0,
 
     /** A fatal out of memory condition occurred. */
-    SHAREMIND_PD_NETWORK_OUT_OF_MEMORY,
+    SHAREMIND_NETWORK_OUT_OF_MEMORY,
 
     /** An unexpected exception occurred. */
-    SHAREMIND_PD_NETWORK_UNKNOWN_ERROR,
+    SHAREMIND_NETWORK_UNKNOWN_ERROR,
 
     /** An invalid argument was given to the function. */
-    SHAREMIND_PD_NETWORK_INVALID_ARGUMENT,
+    SHAREMIND_NETWORK_INVALID_ARGUMENT,
 
     /** A fatal network timeout occurred. */
-    SHAREMIND_PD_NETWORK_TIMEOUT,
+    SHAREMIND_NETWORK_TIMEOUT,
 
     /** No such node was found. */
-    SHAREMIND_PD_NETWORK_NODE_NOT_FOUND,
+    SHAREMIND_NETWORK_NODE_NOT_FOUND,
 
     /** No such miner was found. */
-    SHAREMIND_PD_NETWORK_MINER_NOT_FOUND,
+    SHAREMIND_NETWORK_MINER_NOT_FOUND,
 
     /** The network operation failed because the network is shutting down. */
-    SHAREMIND_PD_NETWORK_NETWORK_SHUTTING_DOWN,
+    SHAREMIND_NETWORK_NETWORK_SHUTTING_DOWN,
 
     /** The network operation failed because networking has failed fatally. */
-    SHAREMIND_PD_NETWORK_NETWORK_FATAL_ERROR,
+    SHAREMIND_NETWORK_NETWORK_FATAL_ERROR,
 
     /** The operation failed because user-set limits were reached. */
-    SHAREMIND_PD_NETWORK_CONFIGURATION_LIMITS_REACHED,
+    SHAREMIND_NETWORK_CONFIGURATION_LIMITS_REACHED,
 
-    /** The PD network has already been initialized. */
-    SHAREMIND_PD_NETWORK_ALREADY_INITIALIZED
+    /** The network configuration has already been initialized. */
+    SHAREMIND_NETWORK_CONFIGURATION_ALREADY_INITIALIZED
 
 };
-typedef enum SharemindPdNetworkError_ SharemindPdNetworkError;
+typedef enum SharemindNetworkError_ SharemindNetworkError;
 
 /** \brief Represents a Sharemind MPC node. */
 struct SharemindNode_ {
@@ -108,14 +107,14 @@ struct SharemindNode_ {
     /**
       \param[in] node pointer to this node.
       \returns the code of the last error that occured while calling the methods
-               of this object or SHAREMIND_PD_NETWORK_OK if no error has
+               of this object or SHAREMIND_NETWORK_OK if no error has
                occurred.
     */
-    SharemindPdNetworkError (* const last_error)(const SharemindNode * node);
+    SharemindNetworkError (* const last_error)(const SharemindNode * node);
 
     /**
       \brief Clears any errors.
-      \post last_error() will return SHAREMIND_PD_NETWORK_OK.
+      \post last_error() will return SHAREMIND_NETWORK_OK.
       \param[in] node pointer to this node.
     */
     void (* const clear_error)(SharemindNode * node);
@@ -140,8 +139,8 @@ struct SharemindNode_ {
       \param[in] message The message to send, must be valid.
       \returns an error code, if any.
     */
-    SharemindPdNetworkError (* const send_message)(SharemindNode * node,
-                                                   const SharemindMessage message);
+    SharemindNetworkError (* const send_message)(SharemindNode * node,
+                                                 const SharemindMessage message);
 
     /**
       \brief Waits for a message.
@@ -161,102 +160,78 @@ struct SharemindNode_ {
 
 }; /* struct SharemindNode_ { */
 
-
-/** \brief A new PDPI network object. */
-struct SharemindPdpiNetwork_ {
+struct SharemindNetworkConfiguration_ {
+    /**
+      \param[in] configuration pointer to this object.
+      \returns the number of the local node mapped to the local miner. Numbering begins with 1.
+    */
+    size_t (* const get_local_node_number)(const SharemindNetworkConfiguration * config);
 
     /**
-      \brief Frees this SharemindPdpiNetwork instance.
+      \param[in] configuration pointer to this object.
+      \returns whether or not the local node is computing node.
+    */
+    bool (* const get_local_is_computing_node)(const SharemindNetworkConfiguration * config);
+
+    /**
+      \param[in] configuration pointer to this object.
+      \returns whether or not the local node is master node.
+    */
+    bool (* const get_local_is_master_node)(const SharemindNetworkConfiguration * config);
+
+}; /* struct SharemindNetworkConfiguration_ { */
+
+/** \brief A new network object. */
+struct SharemindNetwork_ {
+
+    /**
+      \brief Frees this SharemindNetwork instance.
       \param[in] network pointer to this network.
     */
-    void (* const free)(SharemindPdpiNetwork * network);
+    void (* const free)(SharemindNetwork * network);
 
     /**
-      \brief Returns a reference to the PDPI node.
-      \param[in] nodeId The module-side node ID whose PDPI node pointer to return.
-      \returns the pointer to the PDPI node or NULL on error.
+      \brief Returns a reference to the node.
+      \param[in] nodeId The module-side node ID whose node pointer to return.
+      \returns the pointer to the node or NULL on error.
     */
-    SharemindNode * (* const get_node)(SharemindPdpiNetwork * network,
+    SharemindNode * (* const get_node)(SharemindNetwork * network,
                                        size_t nodeId);
 
-}; /* struct SharemindPdpiNetwork_ { */
+    const SharemindNetworkConfiguration * (* const get_configuration)(SharemindNetwork * network);
 
+}; /* struct SharemindNetwork_ { */
 
-/** \brief A PDPI network factory. */
-struct SharemindPdpiNetworkFactory_ {
+/** \brief A PDPI network facility. */
+struct SharemindPdpiNetworkFacility_ {
 
     /**
-      \param[in] factory pointer to this factory.
+      \param[in] facility pointer to this facility.
       \returns the code of the last error that occured while calling the methods
-               of this object or SHAREMIND_PD_NETWORK_OK if no error has
+               of this object or SHAREMIND_NETWORK_OK if no error has
                occurred.
     */
-    SharemindPdNetworkError (* const last_error)(const SharemindPdpiNetworkFactory * factory);
+    SharemindNetworkError (* const last_error)(const SharemindPdpiNetworkFacility * facility);
 
     /**
       \brief Clears any errors.
-      \post last_error() will return SHAREMIND_PD_NETWORK_OK.
-      \param[in] factory pointer to this factory.
+      \post last_error() will return SHAREMIND_NETWORK_OK.
+      \param[in] facility pointer to this facility.
     */
-    void (* const clear_error)(SharemindPdpiNetworkFactory * factory);
+    void (* const clear_error)(SharemindPdpiNetworkFacility * facility);
 
     /**
       \brief Creates and returns a new PDPI network object.
-      \param[in] factory pointer to this factory.
-      \param[in] pdNetwork pointer to the respective PD network object.
+      \param[in] facility pointer to this facility.
+      \param[in] config pointer to the respective network configuration object.
       \warning The ownership of the returned object is not transferred to the caller.
       \returns a new PDPI network object or NULL on error.
     */
-    SharemindPdpiNetwork * (* const new_pdpi_network)(SharemindPdpiNetworkFactory * factory,
-                                                      SharemindPdNetwork * pdNetwork);
+    SharemindNetwork * (* const new_network)(
+            SharemindPdpiNetworkFacility * facility,
+            const SharemindNetworkConfiguration * config);
 
-}; /* struct SharemindPdpiNetworkFactory_ { */
-
-
-/** \brief A new PD network object. */
-struct SharemindPdNetwork_ {
-
-    /**
-      \brief Starts up the network.
-      \param[in] network pointer to this object.
-      \returns whether the network was successfully made available.
-    */
-    SharemindPdNetworkError (* const start)(SharemindPdNetwork * network);
-
-    /**
-      \brief Shuts down the network.
-      \param[in] network pointer to this object.
-    */
-    void (* const stop)(SharemindPdNetwork * network);
-
-    /**
-      \param[in] network pointer to this object.
-      \returns the number of the local node mapped to the local miner. Numbering begins with 1.
-    */
-    size_t (* const get_local_node_number)(const SharemindPdNetwork * network);
-
-    /**
-      \param[in] network pointer to this object.
-      \returns whether or not the local node is computing node.
-    */
-    bool (* const get_local_is_computing_node)(const SharemindPdNetwork * network);
-
-    /**
-      \param[in] network pointer to this object.
-      \returns whether or not the local node is master node.
-    */
-    bool (* const get_local_is_master_node)(const SharemindPdNetwork * network);
-
-    /**
-      \brief Returns a reference to the Sharemind PD node.
-      \param[in] nodeId The module-side node ID whose Sharemind PD node pointer to return.
-      \returns the pointer to the Sharemind PD node or NULL on error.
-    */
-    SharemindNode * (* const get_node)(SharemindPdNetwork * network,
-                                       size_t nodeId);
-
-}; /* struct SharemindPdNetwork_ { */
-
+}; /* struct SharemindPdpiNetworkFacility_ { */
 
 /** \brief A PD network facility. */
 struct SharemindPdNetworkFacility_ {
@@ -264,14 +239,14 @@ struct SharemindPdNetworkFacility_ {
     /**
       \param[in] facility pointer to this facility.
       \returns the code of the last error that occured while calling the methods
-               of this object or SHAREMIND_PD_NETWORK_OK if no error has
+               of this object or SHAREMIND_NETWORK_OK if no error has
                occurred.
     */
-    SharemindPdNetworkError (* const last_error)(const SharemindPdNetworkFacility * factory);
+    SharemindNetworkError (* const last_error)(const SharemindPdNetworkFacility * facility);
 
     /**
       \brief Clears any errors.
-      \post last_error() will return SHAREMIND_PD_NETWORK_OK.
+      \post last_error() will return SHAREMIND_NETWORK_OK.
       \param[in] facility pointer to this facility.
     */
     void (* const clear_error)(SharemindPdNetworkFacility * facility);
@@ -284,30 +259,33 @@ struct SharemindPdNetworkFacility_ {
       \returns whether a server with the given name is known.
     */
     bool (* const haveServer)(
-            SharemindPdNetworkFacility const * facility,
+            const SharemindPdNetworkFacility * facility,
             char const * serverName,
             size_t * serverNumberOut);
 
     /**
-      \brief Initializes and return a the PD network object.
+      \brief Initializes the network configuration and returns a pointer to the
+             configuration object.
       \param[in] facility pointer to this facility.
-      \param[in] numberOfNodeConfigurations the number of node configurations in confs.
       \param[in] confs the configurations for Sharemind nodes.
-      \param[in] withPdLevelNodes whether or not to create separate PD-level Sharemind Nodes.
+      \param[in] numberOfNodeConfigurations the number of node configurations in confs.
+      \returns the network configuration object or NULL on error.
+     */
+    const SharemindNetworkConfiguration * (* const init_configuration)(
+            SharemindPdNetworkFacility * facility,
+            const SharemindNodeConfiguration * confs,
+            size_t numberOfNodeConfigurations);
+
+    /**
+      \brief Creates and returns a PD network object.
+      \param[in] facility pointer to this facility.
+      \param[in] config pointer to the respective network configuration object.
       \warning The ownership of the returned object is not transferred to the caller.
       \returns the PD network object or NULL on error.
     */
-    SharemindPdNetwork * (* const init_pd_network)(SharemindPdNetworkFacility * facility,
-                                                   size_t numberOfNodeConfigurations,
-                                                   const SharemindNodeConfiguration * confs,
-                                                   bool withPdLevelNodes);
-
-    /**
-      \brief Deinitializes the PD network object.
-      \param[in] facility pointer to this facility.
-    */
-    void (* const deinit_pd_network)(SharemindPdNetworkFacility * facility);
-
+    SharemindNetwork * (* const new_network)(
+            SharemindPdNetworkFacility * facility,
+            const SharemindNetworkConfiguration * config);
 }; /* struct SharemindPdNetworkFacility_ { */
 
 #ifdef __cplusplus
