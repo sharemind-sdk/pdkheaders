@@ -22,6 +22,7 @@
 
 #include <cstddef>
 #include <sharemind/libmodapi/api_0x1.h>
+#include <vector>
 #include "ValueTraits.h"
 
 namespace sharemind {
