@@ -12,7 +12,7 @@
 #define SHAREMIND_MINER_PDINCOMINGMESSAGE_H
 
 #include <sharemind/libpd.h>
-#include <Hairball/NetworkMessage.h>
+#include <sharemind/NetworkMessage.h>
 
 
 namespace sharemind {
