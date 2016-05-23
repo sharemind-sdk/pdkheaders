@@ -8,8 +8,8 @@
  */
 
 
-#ifndef SHAREMIND_MINER_PDOUTGOINGMESSAGE_H
-#define SHAREMIND_MINER_PDOUTGOINGMESSAGE_H
+#ifndef SHAREMIND_PDKHEADERS_PDOUTGOINGMESSAGE_H
+#define SHAREMIND_PDKHEADERS_PDOUTGOINGMESSAGE_H
 
 #include <sharemind/libpd.h>
 #include <sharemind/NetworkMessage.h>
@@ -39,4 +39,4 @@ private: /* Fields: */
 
 } /* namespace sharemind { */
 
-#endif /* SHAREMIND_MINER_PDOUTGOINGMESSAGE_H */
+#endif /* SHAREMIND_PDKHEADERS_PDOUTGOINGMESSAGE_H */
