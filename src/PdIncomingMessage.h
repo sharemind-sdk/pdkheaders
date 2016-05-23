@@ -17,12 +17,12 @@
 
 namespace sharemind {
 
-class PdIncomingMessage : public IncomingNetworkMessageNoCopy {
+class PdIncomingMessage : public IncomingNetworkMessage {
 
 public: /* Methods: */
 
     PdIncomingMessage(const SharemindMessage & message, SharemindNode * sender)
-        : IncomingNetworkMessageNoCopy(message.data, message.size)
+        : IncomingNetworkMessage(message.data, message.size)
         , m_senderNode(sender)
     {
         assert(m_senderNode);
