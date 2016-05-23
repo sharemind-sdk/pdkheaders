@@ -31,7 +31,7 @@ public: /* Methods: */
         m_senderNode.free_message(&m_senderNode, &m);
     }
 
-private: /* Methods: */
+private: /* Fields: */
 
     SharemindNode & m_senderNode;
 
