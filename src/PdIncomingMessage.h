@@ -21,21 +21,19 @@ class PdIncomingMessage : public IncomingNetworkMessage {
 
 public: /* Methods: */
 
-    PdIncomingMessage(const SharemindMessage & message, SharemindNode * sender)
+    PdIncomingMessage(SharemindMessage const & message, SharemindNode & sender)
         : IncomingNetworkMessage(message.data, message.size)
         , m_senderNode(sender)
-    {
-        assert(m_senderNode);
-        // Intentionally empty
-    }
+    {}
 
     ~PdIncomingMessage() noexcept override {
-        SharemindMessage m = {data, size};
-        m_senderNode->free_message(m_senderNode, &m);
+        SharemindMessage m{data, size};
+        m_senderNode.free_message(&m_senderNode, &m);
     }
 
 private: /* Methods: */
-    SharemindNode * m_senderNode;
+
+    SharemindNode & m_senderNode;
 
 }; /* class PdIncomingMessage {*/
 
