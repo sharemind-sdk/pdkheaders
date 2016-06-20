@@ -21,6 +21,7 @@
 #define SHAREMIND_PDKHEADERS_SYSCALLSCOMMON_H
 
 #include <cassert>
+#include <cstdio>
 #include <cstdlib>
 #include <exception>
 #include <new>
@@ -33,25 +34,25 @@ namespace sharemind {
 /**
  * Basic syscall parameter verification.
  */
-template < const size_t NumArgs
-         , const bool   NeedReturnValue = false
-         , const size_t NumRefs = 0u
-         , const size_t NumCRefs = 0u
+template < const std::size_t NumArgs
+         , const bool        NeedReturnValue = false
+         , const std::size_t NumRefs = 0u
+         , const std::size_t NumCRefs = 0u
          >
 struct __attribute__ ((visibility("internal"))) SyscallArgs {
     template <class T>
-    static inline size_t countRefs(const T * refs) {
+    static inline std::size_t countRefs(const T * refs) {
         if (!refs)
             return 0u;
 
         assert(refs->pData);
-        size_t r = 1u;
+        std::size_t r = 1u;
         while ((++refs)->pData)
             r++;
         return r;
     }
 
-    static inline bool check(const size_t num_args,
+    static inline bool check(const std::size_t num_args,
                              const SharemindModuleApi0x1Reference * const refs,
                              const SharemindModuleApi0x1CReference * const crefs,
                              const SharemindCodeBlock * const returnValue)
@@ -75,7 +76,7 @@ struct __attribute__ ((visibility("internal"))) SyscallArgs {
 /**
  * Virtual machine handle representation. Validates that the handle is correct.
  */
-template <size_t pdkIndex>
+template <std::size_t pdkIndex>
 class __attribute__ ((visibility("internal"))) PdpiVmHandles: public SharemindModuleApi0x1PdpiInfo {
 public: /* Methods: */
     PdpiVmHandles () {
@@ -86,12 +87,12 @@ public: /* Methods: */
     }
 
 
-    inline bool get (SharemindModuleApi0x1SyscallContext* c, SharemindCodeBlock* args, size_t index = 0) {
+    inline bool get (SharemindModuleApi0x1SyscallContext* c, SharemindCodeBlock* args, std::size_t index = 0) {
         assert (c != 0 && args != 0);
 
         const SharemindModuleApi0x1PdpiInfo * pdpiInfo = (*(c->get_pdpi_info))(c, args[index].uint64[0]);
         if (!pdpiInfo) {
-            fprintf (stderr, "get_pd_process_instance_handle (%" PRIu64 ")\n", args[index].uint64[0]);
+            std::fprintf(stderr, "get_pd_process_instance_handle (%" PRIu64 ")\n", args[index].uint64[0]);
             return false;
         }
 
