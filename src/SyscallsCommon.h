@@ -21,10 +21,10 @@
 #define SHAREMIND_PDKHEADERS_SYSCALLSCOMMON_H
 
 #include <cassert>
+#include <cinttypes>
 #include <cstdio>
 #include <cstdlib>
 #include <exception>
-#include <inttypes.h>
 #include <new>
 
 #include <sharemind/libmodapi/api_0x1.h>
