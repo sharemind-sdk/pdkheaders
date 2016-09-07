@@ -346,6 +346,10 @@ public: /* Methods: */
         return *this;
     }
 
+    friend void swap(ShareVec& x, ShareVec& y) {
+        x.m_vector.swap(y.m_vector);
+    }
+
     explicit inline ShareVec (size_type size, const value_type& defaultValue = value_type {})
         : m_vector (size, defaultValue)
     { }
@@ -491,6 +495,10 @@ public: /* Methods: */
     BitShareVec(BitShareVec&& other)
         : m_vector{std::move(other.m_vector)}
     { }
+
+    friend void swap(BitShareVec& x, BitShareVec& y) {
+        x.m_vector.swap(y.m_vector);
+    }
 
     BitShareVec& operator=(BitShareVec&& other) {
         m_vector = std::move(other.m_vector);
