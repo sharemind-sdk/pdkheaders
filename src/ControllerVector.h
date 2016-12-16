@@ -23,7 +23,6 @@
 #include <cstddef>
 #include <sharemind/BitVector.h>
 #include <sharemind/libcmodapi/api_0x1.h>
-#include "ValueTraits.h"
 
 
 namespace sharemind {
