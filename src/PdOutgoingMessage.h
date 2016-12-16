@@ -11,8 +11,9 @@
 #ifndef SHAREMIND_PDKHEADERS_PDOUTGOINGMESSAGE_H
 #define SHAREMIND_PDKHEADERS_PDOUTGOINGMESSAGE_H
 
-#include <sharemind/libpd.h>
 #include <sharemind/NetworkMessage.h>
+#include "libpd.h"
+
 
 namespace sharemind {
 
