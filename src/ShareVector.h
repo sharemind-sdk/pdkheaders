@@ -23,9 +23,9 @@
 #include <cassert>
 #include <cstdint>
 #include <iterator>
-
-#include "BitVector.h"
+#include <sharemind/BitVector.h>
 #include "ValueTraits.h"
+
 
 namespace sharemind {
 
