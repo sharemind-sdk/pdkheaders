@@ -28,6 +28,7 @@
 
 
 namespace sharemind {
+namespace Detail {
 
 /**
  * Base class to represent controller references.
@@ -65,16 +66,19 @@ protected: /* Fields: */
     T*  m_end;
 
 }; /* class CtrlVecBase { */
+} /* namespace Detail { */
 
 /**
  * Mutable vector of controller data, can be constructed from controller references.
  */
 template <typename T>
-class __attribute__ ((visibility("internal"))) MutableCtrlVec : CtrlVecBase<T> {
+class __attribute__ ((visibility("internal"))) MutableCtrlVec
+    : Detail::CtrlVecBase<T>
+{
 
 private: /* Types: */
 
-    using Base = CtrlVecBase<T>;
+    using Base = Detail::CtrlVecBase<T>;
 
 public: /* Types: */
 
@@ -128,11 +132,13 @@ void MutableCtrlVec<bool>::randomize (Rng & rng) {
  * Immutable vector of controller data, can be constructed from controller constant references.
  */
 template <typename T>
-class __attribute__ ((visibility("internal"))) ImmutableCtrlVec : CtrlVecBase<const T> {
+class __attribute__ ((visibility("internal"))) ImmutableCtrlVec
+    : Detail::CtrlVecBase<const T>
+{
 
 private: /* Types: */
 
-    using Base = CtrlVecBase<const T>;
+    using Base = Detail::CtrlVecBase<const T>;
 
 public: /* Types: */
 
