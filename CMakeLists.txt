@@ -96,7 +96,7 @@ SET(CPACK_DEBIAN_PACKAGE_NAME "libsharemind-pdkheaders-dev")
 SET(CPACK_DEBIAN_PACKAGE_RELEASE "cyber1")
 SET(CPACK_DEBIAN_COMPRESSION_TYPE "xz")
 SET(CPACK_DEBIAN_PACKAGE_DEPENDS
-    "libsharemind-libmodapi-dev (>= 0.1.0), libsharemind-cxxheaders-dev (>= 0.1.0), libc6-dev (>= 2.19)")
+    "libsharemind-modapi-dev (>= 0.1.0), libsharemind-cxxheaders-dev (>= 0.1.0), libc6-dev (>= 2.19)")
 SET(CPACK_DEBIAN_PACKAGE_SECTION "libdevel")
 SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "any")
 SET(CPACK_DEBIAN_FILE_NAME "DEB-DEFAULT")
