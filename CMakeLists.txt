@@ -17,86 +17,54 @@
 # For further information, please contact us at sharemind@cyber.ee.
 #
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
-PROJECT(SharemindPdkHeaders CXX)
-
-SET(CPACK_PACKAGE_VERSION_MAJOR "0")
-SET(CPACK_PACKAGE_VERSION_MINOR "1")
-SET(CPACK_PACKAGE_VERSION_PATCH "0")
-SET(SHAREMIND_PDKHEADERS_VERSION
-    "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
+CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
+PROJECT(SharemindPdkHeaders VERSION 0.1.0 LANGUAGES CXX)
 
 INCLUDE("${CMAKE_CURRENT_SOURCE_DIR}/config.local" OPTIONAL)
 INCLUDE("${CMAKE_CURRENT_BINARY_DIR}/config.local" OPTIONAL)
 
+FIND_PACKAGE(SharemindCMakeHelpers REQUIRED)
+
+SharemindSetProjectVersion()
+
+
 FIND_PACKAGE(SharemindCxxHeaders REQUIRED)
 FIND_PACKAGE(SharemindLibModapi REQUIRED)
 
-MACRO(SetList name)
-  SET("${name}" "")
-  LIST(APPEND "${name}" ${ARGN})
-ENDMACRO()
 
-SetList(SHAREMIND_PDKHEADERS_EXTERNAL_LINK_LIBRARIES)
-SetList(SHAREMIND_PDKHEADERS_EXTERNAL_INCLUDE_DIRS
-    ${SharemindCxxHeaders_INCLUDE_DIRS}
-    ${SharemindLibModapi_INCLUDE_DIRS})
-SetList(SHAREMIND_PDKHEADERS_EXTERNAL_DEFINITIONS
-    ${SharemindCxxHeaders_DEFINITIONS}
-    ${SharemindLibModapi_DEFINITIONS})
-LIST(REMOVE_DUPLICATES SHAREMIND_PDKHEADERS_EXTERNAL_LINK_LIBRARIES)
-LIST(REMOVE_DUPLICATES SHAREMIND_PDKHEADERS_EXTERNAL_INCLUDE_DIRS)
-LIST(REMOVE_DUPLICATES SHAREMIND_PDKHEADERS_EXTERNAL_DEFINITIONS)
-
-SetList(SHAREMIND_PDKHEADERS_INSTALL_LINK_LIBRARIES
-        ${SHAREMIND_PDKHEADERS_EXTERNAL_LINK_LIBRARIES})
-SET(SHAREMIND_PDKHEADERS_INSTALL_INCLUDE_DIRS
-    "${CMAKE_INSTALL_PREFIX}/include"
-    ${SHAREMIND_PDKHEADERS_EXTERNAL_INCLUDE_DIRS})
-SetList(SHAREMIND_PDKHEADERS_INSTALL_DEFINITIONS
-        ${SHAREMIND_PDKHEADERS_EXTERNAL_DEFINITIONS})
-LIST(REMOVE_DUPLICATES SHAREMIND_PDKHEADERS_INSTALL_INCLUDE_DIRS)
-
-FILE(GLOB_RECURSE SHAREMIND_PDKHEADERS_HEADERS
+# Headers:
+FILE(GLOB_RECURSE SharemindPdkHeaders_HEADERS
      "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h")
-ADD_CUSTOM_TARGET("include_SHAREMIND_PDKHEADERS_HEADERS_in_IDE"
-                  SOURCES ${SHAREMIND_PDKHEADERS_HEADERS})
+ADD_CUSTOM_TARGET("include_SharemindPdkHeaders_HEADERS_in_IDE"
+                  SOURCES ${SharemindPdkHeaders_HEADERS})
+INSTALL(FILES ${SharemindPdkHeaders_HEADERS}
+        DESTINATION "include/sharemind"
+        COMPONENT "dev")
 
-INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/"
-        DESTINATION "include/sharemind")
 
-FILE(GLOB_RECURSE SHAREMIND_PDKHEADERS_INFILES
-     "${CMAKE_CURRENT_SOURCE_DIR}/*.in")
-ADD_CUSTOM_TARGET("include_SHAREMIND_PDKHEADERS_INFILES_in_IDE"
-                  SOURCES ${SHAREMIND_PDKHEADERS_INFILES})
-
-CONFIGURE_FILE(
-  "${CMAKE_CURRENT_SOURCE_DIR}/SharemindPdkHeadersConfig.cmake.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/SharemindPdkHeadersConfig.cmake"
-  @ONLY)
-INSTALL(FILES
-  "${CMAKE_CURRENT_BINARY_DIR}/SharemindPdkHeadersConfig.cmake"
-  DESTINATION "lib/SharemindPdkHeaders")
-CONFIGURE_FILE(
-  "${CMAKE_CURRENT_SOURCE_DIR}/SharemindPdkHeadersConfigVersion.cmake.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/SharemindPdkHeadersConfigVersion.cmake"
-  @ONLY)
-INSTALL(FILES
-  "${CMAKE_CURRENT_BINARY_DIR}/SharemindPdkHeadersConfigVersion.cmake"
-  DESTINATION "lib/SharemindPdkHeaders")
+# Install CMake files:
+SharemindNewUniqueList(SharemindPdkHeaders_INSTALL_LINK_LIBRARIES)
+SharemindNewUniqueList(SharemindPdkHeaders_INSTALL_INCLUDE_DIRS
+    "${CMAKE_INSTALL_PREFIX}/include"
+    ${SharemindCxxHeaders_INCLUDE_DIRS}
+    ${SharemindLibModapi_INCLUDE_DIRS}
+)
+SharemindNewUniqueList(SharemindPdkHeaders_INSTALL_DEFINITIONS
+    ${SharemindCxxHeaders_DEFINITIONS}
+    ${SharemindLibModapi_DEFINITIONS}
+)
+SharemindUseCMakeFindFiles()
 
 
 # Packaging:
-SET(CPACK_PACKAGE_VENDOR "Cybernetica AS")
-SET(CPACK_PACKAGE_CONTACT "Sharemind packaging <sharemind-packaging@cyber.ee>")
-SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY
-    "Sharemind PDK development headers")
-SET(CPACK_GENERATOR "DEB")
-SET(CPACK_DEBIAN_PACKAGE_NAME "libsharemind-pdkheaders-dev")
-SET(CPACK_DEBIAN_PACKAGE_RELEASE "cyber1")
-SET(CPACK_DEBIAN_COMPRESSION_TYPE "xz")
-SET(CPACK_DEBIAN_PACKAGE_DEPENDS
-    "libsharemind-modapi-dev (>= 0.1.0), libsharemind-cxxheaders-dev (>= 0.1.0), libc6-dev (>= 2.19)")
-SET(CPACK_DEBIAN_PACKAGE_SECTION "libdevel")
-SET(CPACK_DEBIAN_FILE_NAME "DEB-DEFAULT")
-INCLUDE(CPack)
+SharemindSetupPackaging()
+SharemindAddComponentPackage("dev"
+    NAME "libsharemind-pdkheaders-dev"
+    DESCRIPTION "Sharemind PDK development headers"
+    DEB_SECTION "libdevel"
+    DEB_DEPENDS
+        "libsharemind-modapi-dev (>= 0.1.0)"
+        "libsharemind-cxxheaders-dev (>= 0.1.0)"
+        "libc6-dev (>= 2.19)"
+)
+SharemindPackagingFinalize()

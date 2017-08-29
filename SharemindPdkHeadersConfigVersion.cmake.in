@@ -17,7 +17,7 @@
 # For further information, please contact us at sharemind@cyber.ee.
 #
 
-SET(PACKAGE_VERSION "@SHAREMIND_PDKHEADERS_VERSION@")
+SET(PACKAGE_VERSION "@SharemindPdkHeaders_VERSION@")
 IF(NOT SharemindPdkHeaders_QUIET)
     MESSAGE(STATUS "Sharemind protection domain kind headers version: ${PACKAGE_VERSION}")
 ENDIF()
