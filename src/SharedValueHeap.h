@@ -62,10 +62,8 @@ public: /* Methods: */
     template <typename T>
     bool insert (ShareVec<T>* vec) {
         uint8_t heap_type_id = ValueTraits<T>::heap_type_id;
-        if (vec != 0) {
+        if (vec)
             return m_pointers.insert (std::make_pair (static_cast<ShareVecBase *>(vec), heap_type_id)).second;
-        }
-
         return false;
     }
 
