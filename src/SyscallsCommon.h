@@ -81,15 +81,15 @@ template <std::size_t pdkIndex>
 class __attribute__ ((visibility("internal"))) PdpiVmHandles: public SharemindModuleApi0x1PdpiInfo {
 public: /* Methods: */
     PdpiVmHandles () {
-        pdpiHandle = 0;
-        pdHandle = 0;
+        pdpiHandle = nullptr;
+        pdHandle = nullptr;
         pdkIndex = 0u;
-        moduleHandle = 0;
+        moduleHandle = nullptr;
     }
 
 
     inline bool get (SharemindModuleApi0x1SyscallContext* c, SharemindCodeBlock* args, std::size_t index = 0) {
-        assert (c != 0 && args != 0);
+        assert(c && args);
 
         const SharemindModuleApi0x1PdpiInfo * pdpiInfo = (*(c->get_pdpi_info))(c, args[index].uint64[0]);
         if (!pdpiInfo) {
