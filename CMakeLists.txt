@@ -43,17 +43,15 @@ INSTALL(FILES ${SharemindPdkHeaders_HEADERS}
 
 
 # Install CMake files:
-SharemindNewUniqueList(SharemindPdkHeaders_INSTALL_LINK_LIBRARIES)
-SharemindNewUniqueList(SharemindPdkHeaders_INSTALL_INCLUDE_DIRS
-    "${CMAKE_INSTALL_PREFIX}/include"
-    ${SharemindCxxHeaders_INCLUDE_DIRS}
-    ${SharemindLibModapi_INCLUDE_DIRS}
+SharemindCreateCMakeFindFiles(
+    INCLUDE_DIRS
+        "${CMAKE_INSTALL_PREFIX}/include"
+        ${SharemindCxxHeaders_INCLUDE_DIRS}
+        ${SharemindLibModapi_INCLUDE_DIRS}
+    DEFINITIONS
+        ${SharemindCxxHeaders_DEFINITIONS}
+        ${SharemindLibModapi_DEFINITIONS}
 )
-SharemindNewUniqueList(SharemindPdkHeaders_INSTALL_DEFINITIONS
-    ${SharemindCxxHeaders_DEFINITIONS}
-    ${SharemindLibModapi_DEFINITIONS}
-)
-SharemindUseCMakeFindFiles()
 
 
 # Packaging:
