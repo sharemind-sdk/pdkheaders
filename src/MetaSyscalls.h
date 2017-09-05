@@ -20,7 +20,7 @@
 #ifndef SHAREMIND_PDKHEADERS_METASYSCALLS_H
 #define SHAREMIND_PDKHEADERS_METASYSCALLS_H
 
-#include <sharemind/libmodapi/api_0x1.h>
+#include <sharemind/module-apis/api_0x1.h>
 
 #include "ShareVector.h"
 #include "SyscallsCommon.h"

@@ -27,7 +27,7 @@
 #include <exception>
 #include <new>
 
-#include <sharemind/libmodapi/api_0x1.h>
+#include <sharemind/module-apis/api_0x1.h>
 
 namespace sharemind {
 

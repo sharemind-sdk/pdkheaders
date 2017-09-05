@@ -29,7 +29,7 @@ SharemindSetProjectVersion()
 
 
 FIND_PACKAGE(SharemindCxxHeaders REQUIRED)
-FIND_PACKAGE(SharemindLibModapi REQUIRED)
+FIND_PACKAGE(SharemindModuleApis REQUIRED)
 
 
 # Headers:
@@ -47,10 +47,9 @@ SharemindCreateCMakeFindFiles(
     INCLUDE_DIRS
         "${CMAKE_INSTALL_PREFIX}/include"
         ${SharemindCxxHeaders_INCLUDE_DIRS}
-        ${SharemindLibModapi_INCLUDE_DIRS}
+        ${SharemindModuleApis_INCLUDE_DIRS}
     DEFINITIONS
         ${SharemindCxxHeaders_DEFINITIONS}
-        ${SharemindLibModapi_DEFINITIONS}
 )
 
 
