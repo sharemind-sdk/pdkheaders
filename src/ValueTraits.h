@@ -72,19 +72,19 @@ struct __attribute__ ((visibility("internal"))) ValueTraits {
      * \brief Type identifier.
      * This value is used by the heap to track types.
      */
-    static constexpr uint8_t heap_type_id = ValueType::heap_type_id;
+    static constexpr std::uint8_t heap_type_id = ValueType::heap_type_id;
 
     /**
      * \brief Number of bits.
      * This value gives the number of bits used for the type
      */
-    static constexpr size_t num_of_bits = ValueType::num_of_bits;
+    static constexpr std::size_t num_of_bits = ValueType::num_of_bits;
 
     /**
      * \brief Logarithm of the number of bits.
      * This value gives the logarithm of the number of bits
      */
-    static constexpr size_t log_of_bits = ValueType::log_of_bits;
+    static constexpr std::size_t log_of_bits = ValueType::log_of_bits;
 
 }; /* struct ValueTraits { */
 
