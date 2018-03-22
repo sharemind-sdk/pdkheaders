@@ -21,6 +21,7 @@
 #define SHAREMIND_PDKHEADERS_VMVECTOR_H
 
 #include <cstddef>
+#include <sharemind/AssertReturn.h>
 #include <sharemind/module-apis/api_0x1.h>
 #include <vector>
 #include "ValueTraits.h"
@@ -41,27 +42,32 @@ public: /* Types: */
 
 public: /* Methods: */
 
-    VmVecBase ()
-        : m_begin (0)
-        , m_end (0)
+    VmVecBase() noexcept
+        : m_begin(nullptr)
+        , m_size(0u)
     { }
 
-    VmVecBase (T* begin, size_t size)
-        : m_begin((assert(begin), begin))
-        , m_end (begin + size)
+    VmVecBase(T * const begin, std::size_t const size) noexcept
+        : m_begin(assertReturn(begin))
+        , m_size(size)
     { }
 
-    inline size_t size () const { return (m_end - m_begin); }
-    inline const value_type& operator [] (size_t i) const { return *(m_begin + i); }
-    inline bool empty () const { return m_end <= m_begin; }
-    inline const_iterator begin () const { return m_begin; }
-    inline const_iterator end () const { return m_end; }
-    inline const void* data () const { return static_cast<const void*>(this->m_begin); }
+    std::size_t size() const noexcept { return m_size; }
+
+    value_type const & operator [](std::size_t const i) const noexcept
+    { return *(m_begin + i); }
+
+    bool empty() const noexcept { return m_size == 0u; }
+    const_iterator begin() const noexcept { return m_begin; }
+    const_iterator end() const noexcept { return m_begin + m_size; }
+
+    void const * data() const noexcept
+    { return static_cast<void const *>(m_begin); }
 
 protected: /* Fields: */
 
-    T*  m_begin;
-    T*  m_end;
+    T * m_begin;
+    std::size_t m_size;
 
 }; /* class VmVecBase { */
 
@@ -96,7 +102,7 @@ public: /* Methods: */
 
     void* data () { return static_cast<void*>(this->m_begin); }
     iterator begin () { return this->m_begin; }
-    iterator end () { return this->m_end; }
+    iterator end () { return this->m_begin + this->m_size; }
     value_type& operator [] (size_t i) { return *(this->m_begin + i); }
 
     static constexpr typename T::value_category value_category () {
