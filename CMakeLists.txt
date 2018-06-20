@@ -28,7 +28,7 @@ FIND_PACKAGE(SharemindCMakeHelpers 1.2 REQUIRED)
 SharemindSetProjectVersion()
 
 
-FIND_PACKAGE(SharemindCxxHeaders REQUIRED)
+FIND_PACKAGE(SharemindCxxHeaders 0.4.0 REQUIRED)
 FIND_PACKAGE(SharemindModuleApis REQUIRED)
 
 
@@ -60,7 +60,7 @@ SharemindAddComponentPackage("dev"
     DESCRIPTION "Sharemind PDK development headers"
     DEB_SECTION "libdevel"
     DEB_DEPENDS
-        "libsharemind-cxxheaders-dev (>= 0.1.0)"
+        "libsharemind-cxxheaders-dev (>= 0.4.0)"
         "sharemind-module-apis-dev (>= 1.0.0)"
         "libc6-dev (>= 2.19)"
 )
