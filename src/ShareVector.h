@@ -459,6 +459,12 @@ public: /* Methods: */
         return (m_vector[block_index] & (value_type (1) << bit_index)) != 0;
     }
 
+    friend inline bool operator == (const ShareVec& x, const ShareVec& y)
+    { return x.m_vector == y.m_vector; }
+
+    friend inline bool operator != (const ShareVec& x, const ShareVec& y)
+    { return x.m_vector != y.m_vector; }
+
 private: /* Methods: */
 
     // \returns nullptr if the vector is empty.
@@ -472,7 +478,6 @@ private: /* Fields: */
     impl_t m_vector;
 
 }; /* class ShareVec { */
-
 
 /* Just a facade for bit vectors, extend as new requirements emerge */
 template <typename BitShareType>
@@ -550,6 +555,12 @@ public: /* Methods: */
 
     BitShareVec& operator &= (const BitShareVec& other) { m_vector &= other.m_vector; return *this; }
     BitShareVec& operator ^= (const BitShareVec& other) { m_vector ^= other.m_vector; return *this; }
+
+    friend inline bool operator == (const BitShareVec& x, const BitShareVec& y)
+    { return x.m_vector == y.m_vector; }
+
+    friend inline bool operator != (const BitShareVec& x, const BitShareVec& y)
+    { return x.m_vector != y.m_vector; }
 
     BitShareVec& flip () { m_vector.flip (); return *this; }
 
