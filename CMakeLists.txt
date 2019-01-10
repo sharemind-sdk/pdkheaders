@@ -26,7 +26,7 @@ INCLUDE("${CMAKE_CURRENT_BINARY_DIR}/config.local" OPTIONAL)
 FIND_PACKAGE(SharemindCMakeHelpers 1.3 REQUIRED)
 
 
-FIND_PACKAGE(SharemindCxxHeaders 0.4.0 REQUIRED)
+FIND_PACKAGE(SharemindCxxHeaders 0.7.0 REQUIRED)
 FIND_PACKAGE(SharemindModuleApis 1.0.0 REQUIRED)
 
 
@@ -58,7 +58,7 @@ SharemindAddComponentPackage("dev"
     DESCRIPTION "Sharemind PDK development headers"
     DEB_SECTION "libdevel"
     DEB_DEPENDS
-        "libsharemind-cxxheaders-dev (>= 0.4.0)"
+        "libsharemind-cxxheaders-dev (>= 0.7.0)"
         "sharemind-module-apis-dev (>= 1.0.0)"
         "libc6-dev (>= 2.19)"
 )

@@ -423,21 +423,12 @@ public: /* Methods: */
     }
 
     template <typename InMessage>
-    inline bool deserialize(InMessage & msg) {
-        if (empty())
-            return msg.readEmptyBlock();
-
-        return msg.readBlock(begin_ptr (), end_ptr ());
-    }
+    bool deserialize(InMessage & msg)
+    { return msg.readArray(begin_ptr(), size()); }
 
     template <typename OutMessage>
-    inline void serialize(OutMessage & msg) const {
-        if (!empty()) {
-            msg.writeBlock(begin_ptr (), end_ptr ());
-        } else {
-            msg.writeEmptyBlock();
-        }
-    }
+    void serialize(OutMessage & msg) const
+    { msg.writeArray(begin_ptr(), size()); }
 
     void setBit (size_type i, bool value) {
         static_assert(T::num_of_bits != 0, "Vector with 0-bit elements.");
