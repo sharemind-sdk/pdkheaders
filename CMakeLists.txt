@@ -23,11 +23,11 @@ PROJECT(SharemindPdkHeaders VERSION 0.4.0 LANGUAGES CXX)
 INCLUDE("${CMAKE_CURRENT_SOURCE_DIR}/config.local" OPTIONAL)
 INCLUDE("${CMAKE_CURRENT_BINARY_DIR}/config.local" OPTIONAL)
 
-FIND_PACKAGE(SharemindCMakeHelpers 1.3 REQUIRED)
+FIND_PACKAGE(SharemindCMakeHelpers 1.6 REQUIRED)
 
 
-FIND_PACKAGE(SharemindCxxHeaders 0.7.0 REQUIRED)
-FIND_PACKAGE(SharemindModuleApis 1.0.0 REQUIRED)
+FIND_PACKAGE(SharemindCxxHeaders 0.8.0 REQUIRED)
+FIND_PACKAGE(SharemindModuleApis 1.1.0 REQUIRED)
 
 
 # Headers:
@@ -35,19 +35,24 @@ FILE(GLOB_RECURSE SharemindPdkHeaders_HEADERS
      "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h")
 ADD_CUSTOM_TARGET("include_SharemindPdkHeaders_HEADERS_in_IDE"
                   SOURCES ${SharemindPdkHeaders_HEADERS})
+SharemindAddInterfaceLibrary(PdkHeaders)
+TARGET_INCLUDE_DIRECTORIES(PdkHeaders
+    INTERFACE
+        # $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src> # TODO
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_PREFIX}/include>
+)
+TARGET_LINK_LIBRARIES(PdkHeaders
+    INTERFACE
+        Sharemind::CxxHeaders
+        Sharemind::ModuleApis
+)
 INSTALL(FILES ${SharemindPdkHeaders_HEADERS}
         DESTINATION "include/sharemind"
         COMPONENT "dev")
-
-
-# Install CMake files:
-SharemindCreateCMakeFindFiles(
-    INCLUDE_DIRS
-        "${CMAKE_INSTALL_PREFIX}/include"
-        ${SharemindCxxHeaders_INCLUDE_DIRS}
-        ${SharemindModuleApis_INCLUDE_DIRS}
-    DEFINITIONS
-        ${SharemindCxxHeaders_DEFINITIONS}
+SharemindCreateCMakeFindFilesForTarget(PdkHeaders
+    DEPENDENCIES
+        "SharemindCxxHeaders 0.8.0"
+        "SharemindModuleApis 1.1.0"
 )
 
 
@@ -58,8 +63,8 @@ SharemindAddComponentPackage("dev"
     DESCRIPTION "Sharemind PDK development headers"
     DEB_SECTION "libdevel"
     DEB_DEPENDS
-        "libsharemind-cxxheaders-dev (>= 0.7.0)"
-        "sharemind-module-apis-dev (>= 1.0.0)"
+        "libsharemind-cxxheaders-dev (>= 0.8.0)"
+        "sharemind-module-apis-dev (>= 1.1.0)"
         "libc6-dev (>= 2.19)"
 )
 SharemindPackagingFinalize()
