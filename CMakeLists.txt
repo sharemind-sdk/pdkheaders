@@ -33,9 +33,8 @@ FIND_PACKAGE(SharemindModuleApis 1.1.0 REQUIRED)
 # Headers:
 FILE(GLOB_RECURSE SharemindPdkHeaders_HEADERS
      "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h")
-ADD_CUSTOM_TARGET("include_SharemindPdkHeaders_HEADERS_in_IDE"
-                  SOURCES ${SharemindPdkHeaders_HEADERS})
-SharemindAddInterfaceLibrary(PdkHeaders)
+SharemindAddInterfaceLibrary(PdkHeaders
+    EXPOSE_FILES ${SharemindPdkHeaders_HEADERS})
 TARGET_INCLUDE_DIRECTORIES(PdkHeaders
     INTERFACE
         # $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src> # TODO
