@@ -50,7 +50,7 @@ INSTALL(FILES ${SharemindPdkHeaders_HEADERS}
         COMPONENT "dev")
 SharemindCreateCMakeFindFilesForTarget(PdkHeaders
     DEPENDENCIES
-        "SharemindCxxHeaders 0.8.0"
+        "SharemindCxxHeaders 0.9.0"
         "SharemindModuleApis 1.1.0"
 )
 
@@ -62,7 +62,7 @@ SharemindAddComponentPackage("dev"
     DESCRIPTION "Sharemind PDK development headers"
     DEB_SECTION "libdevel"
     DEB_DEPENDS
-        "libsharemind-cxxheaders-dev (>= 0.8.0)"
+        "libsharemind-cxxheaders-dev (>= 0.9.0)"
         "sharemind-module-apis-dev (>= 1.1.0)"
         "libc6-dev (>= 2.19)"
 )
