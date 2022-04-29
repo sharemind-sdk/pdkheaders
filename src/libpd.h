@@ -162,19 +162,19 @@ struct SharemindNode_ {
 
 struct SharemindNetworkConfiguration_ {
     /**
-      \param[in] configuration pointer to this object.
+      \param[in] config pointer to this object.
       \returns the number of the local node mapped to the local miner. Numbering begins with 1.
     */
     size_t (* const get_local_node_number)(const SharemindNetworkConfiguration * config);
 
     /**
-      \param[in] configuration pointer to this object.
+      \param[in] config pointer to this object.
       \returns whether or not the local node is computing node.
     */
     bool (* const get_local_is_computing_node)(const SharemindNetworkConfiguration * config);
 
     /**
-      \param[in] configuration pointer to this object.
+      \param[in] config pointer to this object.
       \returns whether or not the local node is master node.
     */
     bool (* const get_local_is_master_node)(const SharemindNetworkConfiguration * config);
@@ -255,7 +255,7 @@ struct SharemindPdNetworkFacility_ {
       \brief Checks whether a server with the given name is known.
       \param[in] facility pointer to this facility.
       \param[in] serverName the name of the server to search for.
-      \param[out] serverNumberout if non-null, the number of the server.
+      \param[out] serverNumberOut if non-null, the number of the server.
       \returns whether a server with the given name is known.
     */
     bool (* const haveServer)(
