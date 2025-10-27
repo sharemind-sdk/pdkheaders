@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Cybernetica
+ * Copyright (C) Cybernetica AS
  *
  * Research/Commercial License Usage
  * Licensees holding a valid Research License or Commercial License
@@ -30,9 +30,29 @@
 extern "C" {
 #endif
 
+/**
+ * @brief Callback function to read data from a source into a preallocated buffer.
+ *
+ * @param[in] ctx           Pointer to callback context containing state (e.g. source).
+ * @param[out] data_out     Pointer to a preallocated output buffer, where the.
+ *                          callback must write up to `len` bytes.
+ * @param[in] len           Buffer length in bytes.
+ * @param[out] bytes_read   Number of bytes actually read (can be <len for partial reads).
+ *
+ * @return                  `true` on success, `false` on error.
+ */
+typedef bool (*read_callback_t)(void * ctx, void * data_out, size_t len, size_t * bytes_read);
 
-typedef bool (*read_callback_t)(void * ctx, void const * data, size_t len, size_t * bytes_read);
-typedef bool (*write_callback_t)(void * ctx, void const * data, size_t len);
+/**
+ * @brief Callback function to write all data from a buffer to a destination.
+ *
+ * @param[in] ctx           Pointer to callback context containing state (e.g. destination).
+ * @param[in] data_in       Pointer to a buffer containing data to be written.
+ * @param[in] len           Buffer length in bytes.
+ *
+ * @return                  `true` on success, `false` on error.
+ */
+typedef bool (*write_callback_t)(void * ctx, void const * data_in, size_t len);
 
 #ifdef __cplusplus
 } /* extern "C" { */
