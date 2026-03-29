@@ -430,26 +430,6 @@ public: /* Methods: */
     void serialize(OutMessage & msg) const
     { msg.writeArray(begin_ptr(), size()); }
 
-    void setBit (size_type i, bool value) {
-        static_assert(T::num_of_bits != 0, "Vector with 0-bit elements.");
-        const size_type block_index = i / T::num_of_bits;
-        const value_type mask = value_type (1) << (i % T::num_of_bits);
-        assert (block_index < m_vector.size ());
-        value_type& block = m_vector[block_index];
-        if (value)
-            block |= mask;
-        else
-            block &= ~ mask;
-    }
-
-    inline bool getBit (size_type i) {
-        static_assert(T::num_of_bits != 0, "Vector with 0-bit elements.");
-        const size_type bit_index = i % T::num_of_bits;
-        const size_type block_index = i / T::num_of_bits;
-        assert (block_index < m_vector.size ());
-        return (m_vector[block_index] & (value_type (1) << bit_index)) != 0;
-    }
-
     friend inline bool operator == (const ShareVec& x, const ShareVec& y)
     { return x.m_vector == y.m_vector; }
 
@@ -464,59 +444,73 @@ private: /* Methods: */
     inline const value_type * begin_ptr () const { return empty() ? nullptr : &*begin(); }
     inline const value_type* end_ptr () const { return begin_ptr () + size (); }
 
-private: /* Fields: */
+protected: /* Fields: */
 
     impl_t m_vector;
 
 }; /* class ShareVec { */
 
-/* Just a facade for bit vectors, extend as new requirements emerge */
-template <typename BitShareType>
+template <typename T>
 class __attribute__ ((visibility("internal"))) BitShareVec : public ShareVecBase {
+// hours spent trying to work around all the dependent code and C++ inheritance limitations: 10
+// the following code is copied one to one from ShareVec; randomize was removed
 public: /* Types: */
 
-    using value_type = typename BitShareType::share_type;
-    using impl_t = BitVec<uint64_t>;
-    using reference = impl_t::reference;
-    using const_reference = impl_t::const_reference;
-    using size_type = impl_t::size_type;
+    using value_traits = T;
+    using value_type = typename T::share_type;
+    using impl_t = typename std::vector<value_type>;
+    using reference = typename impl_t::reference;
+    using const_reference = typename impl_t::const_reference;
+    using size_type = typename impl_t::size_type;
+
+    using iterator = share_iterator<T, BitShareVec<T> >;
+    using const_iterator = share_const_iterator<T, BitShareVec<T> >;
 
 public: /* Methods: */
 
     inline BitShareVec () {}
 
     BitShareVec(const BitShareVec &) = delete;
-    BitShareVec & operator=(const BitShareVec &) = delete;
+    BitShareVec& operator=(const BitShareVec&) = delete;
 
     BitShareVec(BitShareVec&& other)
         : m_vector{std::move(other.m_vector)}
     { }
-
-    friend void swap(BitShareVec& x, BitShareVec& y) {
-        x.m_vector.swap(y.m_vector);
-    }
 
     BitShareVec& operator=(BitShareVec&& other) {
         m_vector = std::move(other.m_vector);
         return *this;
     }
 
+    friend void swap(BitShareVec& x, BitShareVec& y) {
+        x.m_vector.swap(y.m_vector);
+    }
+
     explicit inline BitShareVec (size_type size, const value_type& defaultValue = value_type {})
         : m_vector (size, defaultValue)
     { }
 
-    static constexpr typename BitShareType::value_category value_category () {
-        return typename BitShareType::value_category ();
+    template <typename InputIterator>
+    BitShareVec (InputIterator begin, InputIterator end)
+        : m_vector (begin, end)
+    { }
+
+    static constexpr typename T::value_category value_category () {
+        return typename T::value_category ();
     }
 
-    inline void* data() { return m_vector.data(); }
-    inline const void* data() const { return m_vector.data(); }
-
+    inline value_type * data() { return m_vector.data(); }
+    inline const value_type * data() const { return m_vector.data(); }
+    inline const value_type * cdata() const { return m_vector.data(); }
     inline size_type size() const { return m_vector.size (); }
+    inline iterator begin() { return iterator(m_vector.begin()); }
+    inline iterator end() { return iterator(m_vector.end()); }
+    inline const_iterator cbegin() const { return const_iterator(m_vector.begin()); }
+    inline const_iterator cend() const { return const_iterator(m_vector.end()); }
+    inline const_iterator begin() const { return cbegin(); }
+    inline const_iterator end() const { return cend(); }
     inline void resize (size_type sz) { m_vector.resize (sz); }
     inline bool empty () const { return m_vector.empty (); }
-    inline void assign (const BitShareVec& vec) { m_vector.assign (vec.m_vector); }
-    inline void assign (const size_type n, const value_type& val) { m_vector.assign (n, val); }
 
     inline const_reference operator [] (size_type i) const {
         assert (i < size () && "operator[]: Index out of bounds.");
@@ -528,24 +522,42 @@ public: /* Methods: */
         return m_vector[i];
     }
 
-    template <typename InputIterator>
-    inline void assign(InputIterator begin, InputIterator end) {
-        m_vector.assign (begin, end);
-    }
-
     inline void clear_and_release () {
-        m_vector.clear_and_release ();
+        impl_t ().swap (m_vector);
     }
 
-    template <typename Rng> inline void randomize (Rng & rng)
-    { m_vector.randomize (rng); }
-    template <typename InMessage> inline bool deserialize(InMessage & msg)
-    { return m_vector.deserialize(msg); }
-    template <typename OutMessage> inline void serialize(OutMessage & msg) const
-    { return m_vector.serialize(msg); }
+    template <typename InputIterator>
+    inline void insert(iterator pos, InputIterator first, InputIterator last) {
+        m_vector.insert(pos.getInner(),
+                        share_iterator_unwrap<InputIterator>()(first),
+                        share_iterator_unwrap<InputIterator>()(last));
+    }
 
-    BitShareVec& operator &= (const BitShareVec& other) { m_vector &= other.m_vector; return *this; }
-    BitShareVec& operator ^= (const BitShareVec& other) { m_vector ^= other.m_vector; return *this; }
+    template <typename InputIterator>
+    inline void assign(InputIterator first, InputIterator last) {
+        m_vector.assign(share_iterator_unwrap<InputIterator>()(first),
+                        share_iterator_unwrap<InputIterator>()(last));
+    }
+
+    inline void push_back (const_reference val) {
+        m_vector.push_back(val);
+    }
+
+    inline void assign (const BitShareVec& vec) {
+        assign (vec.begin (), vec.end ());
+    }
+
+    inline void assign (const size_type n, const value_type& val) {
+        m_vector.assign(n, val);
+    }
+
+    template <typename InMessage>
+    bool deserialize(InMessage & msg)
+    { return msg.readArray(begin_ptr(), size()); }
+
+    template <typename OutMessage>
+    void serialize(OutMessage & msg) const
+    { msg.writeArray(begin_ptr(), size()); }
 
     friend inline bool operator == (const BitShareVec& x, const BitShareVec& y)
     { return x.m_vector == y.m_vector; }
@@ -553,13 +565,68 @@ public: /* Methods: */
     friend inline bool operator != (const BitShareVec& x, const BitShareVec& y)
     { return x.m_vector != y.m_vector; }
 
-    BitShareVec& flip () { m_vector.flip (); return *this; }
+private: /* Methods: */
+
+    // \returns nullptr if the vector is empty.
+    inline value_type * begin_ptr () { return empty() ? nullptr : &*begin(); }
+    inline value_type* end_ptr () { return begin_ptr () + size (); }
+    inline const value_type * begin_ptr () const { return empty() ? nullptr : &*begin(); }
+    inline const value_type* end_ptr () const { return begin_ptr () + size (); }
 
 protected: /* Fields: */
 
     impl_t m_vector;
 
-}; /* class BitShareVec { */
+// the following is code for BitShareVec specifically
+public:
+    // Randomize bits
+    template <typename Rng>
+    void randomize(Rng & rng) {
+        const size_type n = this->m_vector.size();
+        if (n == 0) return;
+
+        // number of bytes needed to cover all bits
+        const size_type numBytes = (n + 7) / 8;
+        std::vector<uint8_t> buffer(numBytes);
+
+        // fill buffer in one RNG call
+        rng.fillBytes(buffer.data(), numBytes);
+
+        // unpack bits into vector
+        size_type i = 0;
+        for (uint8_t byte : buffer) {
+            for (int b = 0; b < 8 && i < n; ++b, ++i) {
+                this->m_vector[i] = (byte >> b) & 1;
+            }
+        }
+    }
+
+    // Bitwise AND
+    BitShareVec& operator&=(const BitShareVec& other) {
+        const size_type n = this->m_vector.size();
+        assert(n == other.m_vector.size());
+        for (size_type i = 0; i < n; ++i)
+            this->m_vector[i] &= other.m_vector[i];
+        return *this;
+    }
+
+    // Bitwise XOR
+    BitShareVec& operator^=(const BitShareVec& other) {
+        const size_type n = this->m_vector.size();
+        assert(n == other.m_vector.size());
+        for (size_type i = 0; i < n; ++i)
+            this->m_vector[i] ^= other.m_vector[i];
+        return *this;
+    }
+
+    // Flip all bits
+    BitShareVec& flip() {
+        const size_type n = this->m_vector.size();
+        for (size_type i = 0; i < n; ++i)
+            this->m_vector[i] = ~this->m_vector[i] & 1;
+        return *this;
+    }
+};
 
 } /* namespace sharemind { */
 
