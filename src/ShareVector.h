@@ -374,6 +374,7 @@ public: /* Methods: */
     inline const_iterator begin() const { return cbegin(); }
     inline const_iterator end() const { return cend(); }
     inline void resize (size_type sz) { m_vector.resize (sz); }
+    inline void reserve (size_type sz) { m_vector.reserve (sz); }
     inline bool empty () const { return m_vector.empty (); }
 
     inline const_reference operator [] (size_type i) const {
@@ -510,6 +511,7 @@ public: /* Methods: */
     inline const_iterator begin() const { return cbegin(); }
     inline const_iterator end() const { return cend(); }
     inline void resize (size_type sz) { m_vector.resize (sz); }
+    inline void reserve (size_type sz) { m_vector.reserve (sz); }
     inline bool empty () const { return m_vector.empty (); }
 
     inline const_reference operator [] (size_type i) const {
