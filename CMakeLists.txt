@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2015 Cybernetica
+# Copyright (C) Cybernetica
 #
 # Research/Commercial License Usage
 # Licensees holding a valid Research License or Commercial License
@@ -23,10 +23,10 @@ PROJECT(SharemindPdkHeaders VERSION 0.7.0 LANGUAGES CXX)
 INCLUDE("${CMAKE_CURRENT_SOURCE_DIR}/config.local" OPTIONAL)
 INCLUDE("${CMAKE_CURRENT_BINARY_DIR}/config.local" OPTIONAL)
 
-FIND_PACKAGE(SharemindCMakeHelpers 1.6 REQUIRED)
+FIND_PACKAGE(SharemindCMakeHelpers 1.8 REQUIRED)
 
 
-FIND_PACKAGE(SharemindCxxHeaders 0.10.1 REQUIRED)
+FIND_PACKAGE(SharemindCxxHeaders 0.11.0 REQUIRED)
 FIND_PACKAGE(SharemindModuleApis 1.1.0 REQUIRED)
 
 
@@ -50,7 +50,7 @@ INSTALL(FILES ${SharemindPdkHeaders_HEADERS}
         COMPONENT "dev")
 SharemindCreateCMakeFindFilesForTarget(PdkHeaders
     DEPENDENCIES
-        "SharemindCxxHeaders 0.10.1"
+        "SharemindCxxHeaders 0.11.0"
         "SharemindModuleApis 1.1.0"
 )
 
@@ -62,7 +62,7 @@ SharemindAddComponentPackage("dev"
     DESCRIPTION "Sharemind PDK development headers"
     DEB_SECTION "libdevel"
     DEB_DEPENDS
-        "libsharemind-cxxheaders-dev (>= 0.10.1)"
+        "libsharemind-cxxheaders-dev (>= 0.11.0)"
         "sharemind-module-apis-dev (>= 1.1.0)"
         "libc6-dev (>= 2.19)"
 )
